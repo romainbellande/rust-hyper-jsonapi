@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres
+    env_file:
+      - .env
+    environment:
+      HOSTNAME: 'postgres'
+    volumes:
+    - './pgdata:/var/lib/postgresql/data'
+    ports:
+    - $POSTGRES_PORT:5432

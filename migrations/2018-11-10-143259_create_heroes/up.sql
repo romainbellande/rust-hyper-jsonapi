@@ -1,0 +1,5 @@
+CREATE TABLE heroes (
+  id UUID PRIMARY KEY,
+  name VARCHAR(60) NOT NULL,
+  age SERIAL NOT NULL
+)

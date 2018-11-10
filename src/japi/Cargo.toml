@@ -1,0 +1,7 @@
+[package]
+name = "japi"
+version = "0.1.0"
+authors = ["Naimor <romain.bellande@orange.fr>"]
+edition = "2018"
+
+[dependencies]
