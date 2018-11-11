@@ -1,8 +1,8 @@
 extern crate dotenv;
 extern crate serde;
-
 extern crate hyper;
 extern crate futures;
+extern crate japi;
 
 #[macro_use] extern crate serde_derive;
 #[macro_use] extern crate diesel;
@@ -10,12 +10,13 @@ extern crate serde_json;
 
 pub mod db;
 pub mod helpers;
-pub mod schema;
+// pub mod schema;
 
 pub mod modules {
     pub mod hero {
         pub mod model;
         pub mod controller;
+        pub mod schema;
     }
 }
 

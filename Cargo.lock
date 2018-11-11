@@ -319,6 +319,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "japi"
 version = "0.1.0"
+dependencies = [
+ "log 0.4.6 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde 1.0.80 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde_derive 1.0.80 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde_json 1.0.33 (registry+https://github.com/rust-lang/crates.io-index)",
+]
 
 [[package]]
 name = "jsonapi-rust"

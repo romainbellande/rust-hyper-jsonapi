@@ -1,11 +1,17 @@
-use futures::future;
-use hyper::{Method, StatusCode, Response, Body, Request};
+use hyper::{Method, StatusCode, Response, Body, Request, Chunk};
 use diesel::pg::PgConnection;
-
 use diesel::prelude::*;
+use std::thread;
+
+use futures::future;
+use futures::Stream;
+use futures::Future;
+
 use crate::helpers::{BoxFuture};
-use crate::schema::heroes;
-use super::model::Hero;
+use super::schema::heroes;
+use super::model::{Hero, HeroDto};
+use japi::api::{DocumentDto};
+use japi::model::JApiModel;
 
 pub fn find_all() {
 
@@ -32,7 +38,14 @@ pub fn controller(request: Request<Body>, connection: &PgConnection) -> BoxFutur
             response = send_japi(json)
         },
         (&Method::POST, "/heroes") => {
-            response = send(request.into_body())
+            let hero_doc = request.into_body().concat2().and_then(move |body: Chunk| {
+                let json: DocumentDto<HeroDto> = serde_json::from_slice(&body).unwrap();
+                let hero_dto = json.deserialize();
+                let data = Hero::create(hero_dto, &connection).serialize();
+                *response.body_mut() = Body::from(serde_json::to_string_pretty(&data).unwrap());
+                Ok(response)
+            });
+            return Box::new(hero_doc);
         },
         _ => {
             *response.status_mut() = StatusCode::NOT_FOUND;
