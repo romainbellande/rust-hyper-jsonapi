@@ -24,6 +24,10 @@ pub struct Hero {
 japi_model!(Hero; "hero");
 
 impl Hero {
+  pub fn read(connection: &PgConnection) -> Vec<Hero> {
+    heroes::table.order(heroes::id).load::<Hero>(connection).unwrap()
+  }
+
   pub fn create(hero: HeroDto, connection: &PgConnection) -> Hero {
     diesel::insert_into(heroes::table)
       .values(hero)

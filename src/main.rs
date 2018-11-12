@@ -27,8 +27,7 @@ use futures::Future;
 use self::helpers::{BoxFuture};
 
 pub fn manager(req: Request<Body>) -> BoxFuture {
-    let connection = &db::establish_connection();
-    modules::hero::controller::controller(req, connection)
+    modules::hero::controller::controller(req)
 }
 
 fn main() {
