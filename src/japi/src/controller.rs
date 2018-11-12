@@ -36,13 +36,13 @@ impl<'a> Controller<'a> {
     pub fn exec(&mut self) -> BoxFuture {
         let response = Response::new(Body::empty());
 
-        let endpointIndex = &self.endpoints.iter()
+        let endpoint_index = &self.endpoints.iter()
             .position(|(method, path, _callback)| {
                 method == &self.request.method() && path == &self.request.uri().path()
             });
 
-        if endpointIndex.is_some() {
-            let index = endpointIndex.unwrap();
+        if endpoint_index.is_some() {
+            let index = endpoint_index.unwrap();
             let endpoints = &self.endpoints[index];
             let request_copy = mem::replace(&mut self.request, Request::default());
 
