@@ -2,7 +2,7 @@ version: '3'
 
 services:
   postgres:
-    image: postgres
+    build: './docker/postgres'
     env_file:
       - .env
     environment:
