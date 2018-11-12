@@ -10,23 +10,13 @@ use super::model::{Hero, HeroDto};
 use japi::api::{DocumentDto};
 use japi::model::JApiModel;
 use japi::controller::Controller;
+use japi::query::{build_japi_reponse};
 
-fn send<T>(body: T) -> Response<T> {
-    Response::builder()
-        .header("Content-Type", "application/vnd.api+json")
-        .body(body)
-        .unwrap()
-}
-
-fn send_japi(body: String) -> Response<Body> {
-    send(Body::from(body))
-}
-
-fn find_all(request: Request<Body>) -> BoxFuture {
+fn find_all(_request: Request<Body>) -> BoxFuture {
     let connection = db::establish_connection();
     let serialized_heroes: Vec<_> = Hero::read(&connection).iter().map(|hero| hero.serialize()).collect();
     let json = serde_json::to_string_pretty(&serialized_heroes).unwrap();
-    let response = send_japi(json);
+    let response = build_japi_reponse(json);
     Box::new(future::ok(response))
 }
 
