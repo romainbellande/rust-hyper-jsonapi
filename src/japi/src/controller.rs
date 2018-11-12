@@ -1,6 +1,8 @@
 use hyper;
 use hyper::{Method, Response, Body, Request};
 use hyper::rt::{Future};
+use std::mem;
+use url::Url;
 
 use futures::future;
 
@@ -31,27 +33,36 @@ impl<'a> Controller<'a> {
         self
     }
 
-    pub fn exec(&mut self) -> BoxFuture{
+    pub fn exec(&mut self) -> BoxFuture {
         let response = Response::new(Body::empty());
 
-        let endpointIndex = self.endpoints.iter()
+        let endpointIndex = &self.endpoints.iter()
             .position(|(method, path, _callback)| {
-                method == self.request.method() && path == self.request.uri().path()
+                method == &self.request.method() && path == &self.request.uri().path()
             });
 
         if endpointIndex.is_some() {
             let index = endpointIndex.unwrap();
-            let endpoint = &self.endpoints[index];
-            return endpoint.2(self.request);
+            let endpoints = &self.endpoints[index];
+            let request_copy = mem::replace(&mut self.request, Request::default());
+
+            return endpoints.2(request_copy);
         }
 
         Box::new(future::ok(response))
     }
 
     fn register_endpoint(&mut self, method: &'a Method, path: &str, callback: fn(request: Request<Body>) -> BoxFuture) {
+        let url = self.create_url(path.to_string());
+        self.endpoints.push((method, url, callback));
+    }
+
+    fn create_url(&self, url: String) -> String {
         let mut endpoint_path = String::new();
         endpoint_path.push_str(&self.path);
-        endpoint_path.push_str(&path.to_string());
-        self.endpoints.push((method, endpoint_path, callback));
+        if url != "/" {
+            endpoint_path.push_str(&url);
+        }
+        endpoint_path
     }
 }

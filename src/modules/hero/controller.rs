@@ -45,7 +45,7 @@ fn create(request: Request<Body>) -> BoxFuture {
 
 pub fn controller(request: Request<Body>) -> BoxFuture {
     Controller::new("/heroes", request)
-        .get("", find_all)
-        .post("", create)
+        .get("/", find_all)
+        .post("/", create)
         .exec()
 }
